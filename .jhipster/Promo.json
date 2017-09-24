@@ -1,0 +1,20 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "mediaFile",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "promoCategory",
+            "fieldType": "PromoCategory",
+            "fieldValues": "BCA,CIMB,MANDIRI,CUSTOM"
+        }
+    ],
+    "changelogDate": "20170924132717",
+    "entityTableName": "promo",
+    "dto": "no",
+    "pagination": "no",
+    "service": "serviceImpl"
+}

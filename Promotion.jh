@@ -1,0 +1,14 @@
+
+entity Promo {
+	id String
+    mediaFile String
+    promoCategory PromoCategory
+}
+
+enum PromoCategory {
+	BCA,CIMB,MANDIRI,CUSTOM
+}
+
+
+
+service all with serviceImpl
