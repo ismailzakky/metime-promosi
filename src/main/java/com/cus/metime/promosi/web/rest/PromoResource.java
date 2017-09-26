@@ -40,7 +40,7 @@ public class PromoResource {
      * @return the ResponseEntity with status 201 (Created) and with body the new promo, or with status 400 (Bad Request) if the promo has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PostMapping("/promos")
+    @PostMapping("/promo")
     @Timed
     public ResponseEntity<Promo> createPromo(@RequestBody Promo promo) throws URISyntaxException {
         log.debug("REST request to save Promo : {}", promo);
@@ -62,7 +62,7 @@ public class PromoResource {
      * or with status 500 (Internal Server Error) if the promo couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PutMapping("/promos")
+    @PutMapping("/promo")
     @Timed
     public ResponseEntity<Promo> updatePromo(@RequestBody Promo promo) throws URISyntaxException {
         log.debug("REST request to update Promo : {}", promo);
@@ -80,7 +80,7 @@ public class PromoResource {
      *
      * @return the ResponseEntity with status 200 (OK) and the list of promos in body
      */
-    @GetMapping("/promos")
+    @GetMapping("/promoList")
     @Timed
     public List<Promo> getAllPromos() {
         log.debug("REST request to get all Promos");
@@ -93,7 +93,7 @@ public class PromoResource {
      * @param id the id of the promo to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the promo, or with status 404 (Not Found)
      */
-    @GetMapping("/promos/{id}")
+    @GetMapping("/promo/{id}")
     @Timed
     public ResponseEntity<Promo> getPromo(@PathVariable Long id) {
         log.debug("REST request to get Promo : {}", id);
@@ -107,7 +107,7 @@ public class PromoResource {
      * @param id the id of the promo to delete
      * @return the ResponseEntity with status 200 (OK)
      */
-    @DeleteMapping("/promos/{id}")
+    @DeleteMapping("/promo/{id}")
     @Timed
     public ResponseEntity<Void> deletePromo(@PathVariable Long id) {
         log.debug("REST request to delete Promo : {}", id);

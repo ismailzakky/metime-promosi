@@ -61,12 +61,37 @@ spring:
     jpa:
         open-in-view: false
         hibernate:
-            ddl-auto: none
+            ddl-auto: create-drop
             naming:
                 physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
                 implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
     messages:
         basename: i18n/messages
+    cloud:
+        stream:
+            bindings:
+                fileOutput:
+                    destination: fileOutput
+                    binder: rabbitmqserver
+                indexOutput:
+                    destination: indexOutput
+                    binder: rabbitmqserver
+                fileInput:
+                    destination: fileOutput
+                    binder: rabbitmqserver
+                indexInput:
+                    destination: indexOutput
+                    binder: rabbitmqserver
+            binders:
+                rabbitmqserver:
+                    type: rabbit
+                    environment:
+                        spring:
+                            rabbitmq:
+                                host: 10.17.33.240
+                                port: 5672
+                                username: guest
+                                passowrd: guest
     mvc:
         favicon:
             enabled: false
