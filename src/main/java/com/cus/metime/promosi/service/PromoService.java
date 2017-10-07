@@ -1,6 +1,10 @@
 package com.cus.metime.promosi.service;
 
 import com.cus.metime.promosi.domain.Promo;
+import com.cus.metime.promosi.dto.PromoDTO;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -11,10 +15,11 @@ public interface PromoService {
     /**
      * Save a promo.
      *
-     * @param promo the entity to save
+     * @param promoDTO the entity to save
+     * @param file
      * @return the persisted entity
      */
-    Promo save(Promo promo);
+    Promo save(PromoDTO promoDTO, MultipartFile file) throws IOException;
 
     /**
      *  Get all the promos.
@@ -22,6 +27,8 @@ public interface PromoService {
      *  @return the list of entities
      */
     List<Promo> findAll();
+
+    List<Promo> findSegmentActivePromos(String segment);
 
     /**
      *  Get the "id" promo.
@@ -37,4 +44,6 @@ public interface PromoService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    Promo update(PromoDTO promoDTO);
 }

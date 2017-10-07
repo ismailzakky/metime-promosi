@@ -61,7 +61,7 @@ spring:
     jpa:
         open-in-view: false
         hibernate:
-            ddl-auto: create-drop
+            ddl-auto: update
             naming:
                 physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
                 implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
@@ -71,17 +71,25 @@ spring:
         stream:
             bindings:
                 fileOutput:
-                    destination: fileOutput
+                    destination: file
                     binder: rabbitmqserver
+                    contentType: application/x-java-serialized-object
                 indexOutput:
-                    destination: indexOutput
+                    destination: index
                     binder: rabbitmqserver
+                    contentType: application/x-java-serialized-object
                 fileInput:
-                    destination: fileOutput
+                    destination: file
                     binder: rabbitmqserver
+                    contentType: application/x-java-serialized-object
+                    durableSubscription: true
+                    group: fileInputGroup
                 indexInput:
-                    destination: indexOutput
+                    destination: index
                     binder: rabbitmqserver
+                    contentType: application/x-java-serialized-object
+                    durableSubscription: true
+                    group: indexInputGroup
             binders:
                 rabbitmqserver:
                     type: rabbit
@@ -91,7 +99,7 @@ spring:
                                 host: 10.17.33.240
                                 port: 5672
                                 username: guest
-                                passowrd: guest
+                                password: guest
     mvc:
         favicon:
             enabled: false
@@ -158,4 +166,3 @@ jhipster:
 # http://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-application:

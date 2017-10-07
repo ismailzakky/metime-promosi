@@ -1,5 +1,6 @@
 package com.cus.metime.promosi.web.rest;
 
+import com.cus.metime.promosi.dto.MessageEvent;
 import com.cus.metime.promosi.service.AssyncMessagingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,12 +23,12 @@ public class TestResource {
 
     @GetMapping("/index")
     public void sendIndexMessage(){
-        assyncMessagingService.sendIndexMessage();
+        //assyncMessagingService.sendIndexMessage(MessageEvent.UPDATE, promo);
     }
 
     @GetMapping("/file")
     public void senFileMessage() {
-        assyncMessagingService.sendFileMessage();
+        //assyncMessagingService.sendFileMessage();
     }
 
 }

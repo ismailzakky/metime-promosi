@@ -4,7 +4,10 @@ package com.cus.metime.promosi.domain;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
+import com.cus.metime.promosi.domain.embeddable.CreationalDate;
+import com.cus.metime.promosi.domain.embeddable.ValidityPeriod;
 import com.cus.metime.promosi.domain.enumeration.PromoCategory;
 
 /**
@@ -27,6 +30,43 @@ public class Promo implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "promo_category")
     private PromoCategory promoCategory;
+
+    @Embedded
+    private CreationalDate creationalDate;
+
+    @Embedded
+    private ValidityPeriod validityPeriod;
+
+    @Column(name = "segment")
+    private String segment;
+
+    @Column(name = "uuid")
+    private String uuid;
+
+
+    public Promo() {
+    }
+
+    public Promo(String mediaFile, PromoCategory promoCategory, CreationalDate creationalDate, ValidityPeriod validityPeriod, String segment, String uuid) {
+        this.mediaFile = mediaFile;
+        this.promoCategory = promoCategory;
+        this.creationalDate = creationalDate;
+        this.validityPeriod = validityPeriod;
+        this.segment = segment;
+        this.uuid = uuid;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 
     // jhipster-needle-entity-add-field - Jhipster will add fields here, do not remove
     public Long getId() {
@@ -59,10 +99,35 @@ public class Promo implements Serializable {
         return this;
     }
 
+    public ValidityPeriod getValidityPeriod() {
+        return validityPeriod;
+    }
+
+    public void setValidityPeriod(ValidityPeriod validityPeriod) {
+        this.validityPeriod = validityPeriod;
+    }
+
     public void setPromoCategory(PromoCategory promoCategory) {
         this.promoCategory = promoCategory;
     }
     // jhipster-needle-entity-add-getters-setters - Jhipster will add getters and setters here, do not remove
+
+
+    public CreationalDate getCreationalDate() {
+        return creationalDate;
+    }
+
+    public void setCreationalDate(CreationalDate creationalDate) {
+        this.creationalDate = creationalDate;
+    }
+
+    public String getSegment() {
+        return segment;
+    }
+
+    public void setSegment(String segment) {
+        this.segment = segment;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -87,9 +152,13 @@ public class Promo implements Serializable {
     @Override
     public String toString() {
         return "Promo{" +
-            "id=" + getId() +
-            ", mediaFile='" + getMediaFile() + "'" +
-            ", promoCategory='" + getPromoCategory() + "'" +
-            "}";
+            "id=" + id +
+            ", mediaFile='" + mediaFile + '\'' +
+            ", promoCategory=" + promoCategory +
+            ", creationalDate=" + creationalDate +
+            ", validityPeriod=" + validityPeriod +
+            ", segment='" + segment + '\'' +
+            ", uuid='" + uuid + '\'' +
+            '}';
     }
 }

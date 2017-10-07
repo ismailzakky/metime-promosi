@@ -2,19 +2,31 @@ package com.cus.metime.promosi.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.cus.metime.promosi.domain.Promo;
+import com.cus.metime.promosi.dto.MessageEvent;
+import com.cus.metime.promosi.dto.PromoDTO;
+import com.cus.metime.promosi.security.SecurityUtils;
+import com.cus.metime.promosi.service.AssyncMessagingService;
 import com.cus.metime.promosi.service.PromoService;
+import com.cus.metime.promosi.util.RandomString;
 import com.cus.metime.promosi.web.rest.util.HeaderUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * REST controller for managing Promo.
@@ -29,26 +41,35 @@ public class PromoResource {
 
     private final PromoService promoService;
 
-    public PromoResource(PromoService promoService) {
+    private final AssyncMessagingService assyncMessagingService;
+
+    public PromoResource(PromoService promoService, AssyncMessagingService assyncMessagingService) {
         this.promoService = promoService;
+        this.assyncMessagingService = assyncMessagingService;
     }
 
     /**
      * POST  /promos : Create a new promo.
      *
-     * @param promo the promo to create
+     * @param param the promo to create
      * @return the ResponseEntity with status 201 (Created) and with body the new promo, or with status 400 (Bad Request) if the promo has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PostMapping("/promo")
+    @PostMapping(value = "/promo")
     @Timed
-    public ResponseEntity<Promo> createPromo(@RequestBody Promo promo) throws URISyntaxException {
-        log.debug("REST request to save Promo : {}", promo);
-        if (promo.getId() != null) {
+    public ResponseEntity<Promo> createPromo(@RequestParam("param") String param, @RequestParam("file") MultipartFile file) throws URISyntaxException, IOException {
+
+
+        PromoDTO promoDTO = new ObjectMapper().readValue(param, PromoDTO.class);
+        log.debug("REST request to save Promo : {}", promoDTO);
+        if (promoDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new promo cannot already have an ID")).body(null);
         }
-        Promo result = promoService.save(promo);
-        return ResponseEntity.created(new URI("/api/promos/" + result.getId()))
+
+
+
+        Promo result = promoService.save(promoDTO,file);
+        return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
@@ -56,7 +77,7 @@ public class PromoResource {
     /**
      * PUT  /promos : Updates an existing promo.
      *
-     * @param promo the promo to update
+     * @param promoDTO the promo to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated promo,
      * or with status 400 (Bad Request) if the promo is not valid,
      * or with status 500 (Internal Server Error) if the promo couldn't be updated
@@ -64,14 +85,19 @@ public class PromoResource {
      */
     @PutMapping("/promo")
     @Timed
-    public ResponseEntity<Promo> updatePromo(@RequestBody Promo promo) throws URISyntaxException {
-        log.debug("REST request to update Promo : {}", promo);
-        if (promo.getId() == null) {
-            return createPromo(promo);
+    public ResponseEntity<Promo> updatePromo(@RequestBody PromoDTO promoDTO) throws URISyntaxException {
+        log.debug("REST request to update Promo : {}", promoDTO);
+        Promo promo = promoService.findOne(promoDTO.getId());
+        if (promoDTO.getId() == null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "notexist", "selected promo is'nt exist")).body(null);
         }
-        Promo result = promoService.save(promo);
+        else if(promo == null){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "notexist", "selected promo is'nt exist")).body(null);
+        }
+
+        Promo result = promoService.update(promoDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, promo.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, promoDTO.getId().toString()))
             .body(result);
     }
 
@@ -86,6 +112,15 @@ public class PromoResource {
         log.debug("REST request to get all Promos");
         return promoService.findAll();
         }
+
+
+    @GetMapping("/promoList/{segmentId}")
+    @Timed
+    public List<Promo> getSegmentActivePromo(@PathVariable("segmentId") String segment){
+        log.debug("REST request to get all active Promos");
+        return promoService.findSegmentActivePromos(segment);
+
+    }
 
     /**
      * GET  /promos/:id : get the "id" promo.
